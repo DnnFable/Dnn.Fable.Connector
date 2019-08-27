@@ -105,3 +105,8 @@ let text =
 
 container.innerText <- text  
 ```
+
+`DNN.Fable.Fetch` offers methods to handle GET, POST, PUT, DELETE, PATCH requests.
+
+### Credits
+DNN.Fable is build on top of [Thoth.Json.Net](https://github.com/thoth-org/Thoth.Json.Net) and [Thoth.Fetch](https://github.com/thoth-org/Thoth.Fetch)
