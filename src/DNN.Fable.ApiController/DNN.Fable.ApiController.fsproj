@@ -49,27 +49,26 @@
   <ItemGroup>
     <Reference Include="DotNetNuke">
       <HintPath>packages\DotNetNuke.Core.8.0.4.226\lib\net40\DotNetNuke.dll</HintPath>
-       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DotNetNuke.Web">
       <HintPath>packages\DotNetNuke.Web.8.0.4.226\lib\net40\DotNetNuke.Web.dll</HintPath>
-       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DotNetNuke.WebUtility">
       <HintPath>packages\DotNetNuke.Web.8.0.4.226\lib\net40\DotNetNuke.WebUtility.dll</HintPath>
-       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Core">
       <HintPath>packages\FSharp.Core.4.6.2\lib\net45\FSharp.Core.dll</HintPath>
-
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
       <HintPath>packages\DotNetNuke.Core.8.0.4.226\lib\net40\Microsoft.ApplicationBlocks.Data.dll</HintPath>
-       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure">
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json">

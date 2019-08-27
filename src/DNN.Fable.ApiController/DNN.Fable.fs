@@ -1,4 +1,4 @@
-﻿namespace DNN.Fable
+﻿module DNN.Fable
 open System.Web.Http.Controllers
 open System.Net.Http.Formatting
 open Newtonsoft.Json
@@ -9,7 +9,7 @@ type WithThothJsonNetConverterAttribute (?isCamelCase : bool, ?extra : ExtraCode
  
     interface IControllerConfiguration with
        member __.Initialize ( (controllerSettings:HttpControllerSettings) , _ ) =
-            let converter = Thoth.Json.Net.Converters.Converter(?isCamelCase = isCamelCase, ?extra = extra)
+            let converter = Converters.Converter(?isCamelCase = isCamelCase, ?extra = extra)
             let thothFormatter =
                 JsonMediaTypeFormatter
                     (SerializerSettings = JsonSerializerSettings(Converters = [| converter |]))
@@ -17,7 +17,6 @@ type WithThothJsonNetConverterAttribute (?isCamelCase : bool, ?extra : ExtraCode
             controllerSettings.Formatters.Add thothFormatter
     new() = WithThothJsonNetConverterAttribute(true, Map.empty)
 
-[<RequireQualifiedAccess>]
 [<WithThothJsonNetConverter>]
 type ApiController  ()  =
     inherit DotNetNuke.Web.Api.DnnApiController ()

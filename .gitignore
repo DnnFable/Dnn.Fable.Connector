@@ -3,3 +3,5 @@ packages/
 .ionide/
 obj/
 bin/
+.nuget/
+*.nupkg
