@@ -78,7 +78,7 @@ The moduleId needs to be passed as Token within the SPA template:
 __index.html_:
 ```html
 [AntiForgeryToken: {}]
-<div id="myModule-container" data-moduleId ="[Module:ModuleId]"/>
+<div id="myModule-container" data-moduleId ="[ModuleContext:ModuleId]"/>
 [JavaScript:{ path: "~/desktopModules/mycomp/mymod/bundle.js", provider:"DnnFormBottomProvider"}]
 ```
 Then this script talks to the service above and queries the current user.
