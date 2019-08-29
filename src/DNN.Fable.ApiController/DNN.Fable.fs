@@ -15,7 +15,7 @@ type WithThothJsonNetConverterAttribute (?isCamelCase : bool, ?extra : ExtraCode
                     (SerializerSettings = JsonSerializerSettings(Converters = [| converter |]))
             controllerSettings.Formatters.Clear()
             controllerSettings.Formatters.Add thothFormatter
-    new() = WithThothJsonNetConverterAttribute(true, Map.empty)
+    new() = WithThothJsonNetConverterAttribute(false, Map.empty)
 
 [<WithThothJsonNetConverter>]
 type ApiController  ()  =
