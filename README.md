@@ -96,17 +96,16 @@ let url = "myservice/currentuser" // MyServiceController.CurrentUser()
 let container = document.getElementById "myModule-container"
 let moduleId = container.dataset.["moduleId"]
 
-let text =
-    promise { return! DNN.Fable.Fetch.get (moduleId, moduleName, url) }
-
-    |> function
-       | Unauthenticated -> "Please login"
-       | LoggedInAs p    -> sprintf "Hello %s" p.DisplayName
-
-container.innerText <- text  
+DNN.Fable.Fetch.get(moduleId, moduleName, url) // returns a Promise<User>
+|> Promise.iter ( fun user -> 
+    let text =
+        match user with
+        | Unauthenticated -> "Please login"
+        | LoggedInAs p    -> sprintf "Hello %s" p.DisplayName
+    container.innerText <- text ) 
 ```
 
-`DNN.Fable.Fetch` offers methods to handle GET, POST, PUT, DELETE, PATCH requests.
+[DNN.Fable.Fetch](https://www.nuget.org/packages/DNN.Fable.Fetch/) offers methods to handle GET, POST, PUT, DELETE, PATCH requests.
 
 ### Credits
-DNN.Fable is build on top of [Thoth.Json.Net](https://github.com/thoth-org/Thoth.Json.Net) and [Thoth.Fetch](https://github.com/thoth-org/Thoth.Fetch)
+DNN.Fable Fetch and ApiController are build on top of [Thoth.Json.Net](https://github.com/thoth-org/Thoth.Json.Net) and [Thoth.Fetch](https://github.com/thoth-org/Thoth.Fetch)
