@@ -12,10 +12,13 @@ type WithThothJsonNetConverterAttribute (?isCamelCase : bool, ?extra : ExtraCode
             let converter = Converters.Converter(?isCamelCase = isCamelCase, ?extra = extra)
             let thothFormatter =
                 JsonMediaTypeFormatter
-                    (SerializerSettings = JsonSerializerSettings(Converters = [| converter |]))
+                    (SerializerSettings = JsonSerializerSettings(
+                        Converters = [| converter |],
+                        Formatting = Formatting.Indented,
+                        DateTimeZoneHandling = DateTimeZoneHandling.Utc))
             controllerSettings.Formatters.Clear()
             controllerSettings.Formatters.Add thothFormatter
-    new() = WithThothJsonNetConverterAttribute(false, Map.empty)
+    new() = WithThothJsonNetConverterAttribute()
 
 [<WithThothJsonNetConverter>]
 type ApiController  ()  =

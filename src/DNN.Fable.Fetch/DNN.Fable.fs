@@ -16,19 +16,23 @@ module ServicesFramework =
     [<Emit("window['$'].ServicesFramework($0)")>]
     let init moduleid :IServicesFramework  = jsNative 
 
-    let moduleHeaders (sf:IServicesFramework)  = [ 
+    let moduleHeaders (sf:IServicesFramework) = [    
         Custom ("ModuleId", sf.getModuleId())
         Custom ("TabId", sf.getTabId())
         Custom ("RequestVerificationToken", sf.getAntiForgeryValue())]
 
-    let setup moduleId moduleName url props=
+    let setup' isGet moduleId moduleName url props  =
         let sf = init moduleId    
         let serviceroot = sf.getServiceRoot(moduleName)
         let props = 
-            [ requestHeaders (moduleHeaders sf) 
+            [ requestHeaders (if isGet 
+                              then moduleHeaders sf 
+                              else ContentType "application/json" :: moduleHeaders sf ) 
               Credentials RequestCredentials.Sameorigin ] 
             @ defaultArg props []
         {| Url = serviceroot + url ; Props = props |}
+
+    let setup = setup' false
 
 type Fetch =
     /// **Description**
@@ -62,7 +66,7 @@ type Fetch =
             ?isCamelCase : bool,
             ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties  
+        let sf = ServicesFramework.setup' true moduleId moduleName url properties  
         Thoth.Fetch.Fetch.fetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver )
 
     /// **Description**
@@ -97,7 +101,7 @@ type Fetch =
             ?isCamelCase : bool,
             ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties 
+        let sf = ServicesFramework.setup' true moduleId moduleName url properties 
         Thoth.Fetch.Fetch.tryFetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra= extra, ?responseResolver= responseResolver)
 
     /// Alias to `Fetch.fetchAs`

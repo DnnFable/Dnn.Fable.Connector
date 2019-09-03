@@ -3,12 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>DNN.Fable.Fetch</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.3</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <license >MIT</license>
-    <projectUrl>https://github.com/SCullman/DNN.Fable.Connector</projectUrl>
-    <Authors>Stefan Cullmann</Authors>
+     <Authors>Stefan Cullmann</Authors>
     <Company>Stefan Cullmann</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/SCullman/DNN.Fable.Connector</PackageProjectUrl>
+    <PackageTags>DNN DotNetNuke fsharp json</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +23,9 @@
   <!-- Add source files to "fable" folder in Nuget package -->
 <ItemGroup>
     <Content Include="*.fsproj; **\*.fs" PackagePath="fable\" />
+</ItemGroup>
+<ItemGroup>
+  <PackageReference Update="FSharp.Core" Version="4.6.2" />
 </ItemGroup>
 
 </Project>
