@@ -6,13 +6,14 @@ module Encode =
     open System.Globalization
     open Fable.Core
     open Fable.Core.JsInterop
-   
-    [<Emit("Array.from($0)")>]
-    let private arrayFrom(x): obj = jsNative
+  
 
     /// **Description**
     /// Represents a JavaScript value
     type Value = obj
+
+    [<Emit("Array.from($0)")>]
+    let private arrayFrom(values): Value = jsNative
 
     type Encoder<'T> = 'T -> Value
 
@@ -155,7 +156,7 @@ module Encode =
     ///
     ///**Exceptions**
     ///
-    let inline list (values : Value list) : Value =
+    let list (values : Value list) : Value =
         // Don't use List.toArray as it may create a typed array
         box (arrayFrom(values))
 
