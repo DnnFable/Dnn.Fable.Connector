@@ -2,23 +2,18 @@
 open System.Web.Http.Controllers
 open System.Net.Http.Formatting
 open Newtonsoft.Json
-open Thoth.Json.Net
+open Thoth.Json.Net.Converters
 
-type WithThothJsonNetConverterAttribute (?isCamelCase : bool, ?extra : ExtraCoders) =
+type WithThothJsonNetConverterAttribute() =
     inherit System.Attribute()
- 
     interface IControllerConfiguration with
-       member __.Initialize ( (controllerSettings:HttpControllerSettings) , _ ) =
-            let converter = Converters.Converter(?isCamelCase = isCamelCase, ?extra = extra)
+        member __.Initialize((controllerSettings : HttpControllerSettings), _) =
+            let converter = CacheConverter(converters)
             let thothFormatter =
                 JsonMediaTypeFormatter
-                    (SerializerSettings = JsonSerializerSettings(
-                        Converters = [| converter |],
-                        Formatting = Formatting.Indented,
-                        DateTimeZoneHandling = DateTimeZoneHandling.Utc))
+                    (SerializerSettings = JsonSerializerSettings(Converters = [| converter |]))
             controllerSettings.Formatters.Clear()
             controllerSettings.Formatters.Add thothFormatter
-    new() = WithThothJsonNetConverterAttribute()
 
 [<WithThothJsonNetConverter>]
 type ApiController  ()  =

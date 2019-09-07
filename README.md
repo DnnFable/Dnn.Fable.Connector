@@ -17,8 +17,9 @@ And all plays well with DNN, and developers can benefit from the proven security
 Usually DNN Web Services inherit from `DotNetNuke.Web.Api.DnnApiController`, which is again based on Web Api. It is a perfect match, it is only that it uses `Newtonsoft.Json` for encoding and decoding data for requests and responses.
 
 This is fine for C# structs and classes, but just ugly and error prone for F# data structures like discriminated unions or option types.
+The fable project Thoth.Json(.Net) offers several packages which simplifies and prettifies encoding and decoding. This project is a wrapper of these packages and targets DNN.
 
-The good news is that it is possible to share code between service and client.
+It is now possible (nbut not nescessary) to share code between service and client.
 
 _shared.fs:_
 ```fsharp

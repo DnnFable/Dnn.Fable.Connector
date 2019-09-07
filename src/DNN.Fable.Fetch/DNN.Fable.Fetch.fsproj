@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>DNN.Fable.Fetch</PackageId>
-    <Version>1.0.3</Version>
+    <Version>0.1.0</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
      <Authors>Stefan Cullmann</Authors>
     <Company>Stefan Cullmann</Company>
@@ -14,15 +14,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Decode.fs" />
+    <Compile Include="Encode.fs" />
     <Compile Include="DNN.Fable.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Thoth.Fetch" Version="1.0.0" />
   </ItemGroup>
   <!-- Add source files to "fable" folder in Nuget package -->
 <ItemGroup>
     <Content Include="*.fsproj; **\*.fs" PackagePath="fable\" />
+</ItemGroup>
+<ItemGroup>
+  <PackageReference Include="Fable.Fetch" Version="2.1.0" />
 </ItemGroup>
 <ItemGroup>
   <PackageReference Update="FSharp.Core" Version="4.6.2" />

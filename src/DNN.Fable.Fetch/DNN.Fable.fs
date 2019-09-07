@@ -2,7 +2,8 @@
 
 open Fable.Core
 open Fetch
-open Thoth.Json
+open DNN.Thoth.Json
+open Fable.Core.JsInterop
 
 [<RequireQualifiedAccess>]
 module ServicesFramework =
@@ -21,20 +22,170 @@ module ServicesFramework =
         Custom ("TabId", sf.getTabId())
         Custom ("RequestVerificationToken", sf.getAntiForgeryValue())]
 
-    let setup' isGet moduleId moduleName url props  =
+    let setup moduleId moduleName url =
         let sf = init moduleId    
         let serviceroot = sf.getServiceRoot(moduleName)
-        let props = 
-            [ requestHeaders (if isGet 
-                              then moduleHeaders sf 
-                              else ContentType "application/json" :: moduleHeaders sf ) 
-              Credentials RequestCredentials.Sameorigin ] 
-            @ defaultArg props []
-        {| Url = serviceroot + url ; Props = props |}
+        {| Url = serviceroot + url ; Headers = moduleHeaders sf  |}
 
-    let setup = setup' false
-
+type RequestProperties = Fetch.Types.RequestProperties
 type Fetch =
+
+    /// **Description**
+    ///
+    /// Retrieves data from the specified resource by applying the provided `decoder`.
+    ///
+    /// An exception will be thrown if the decoder failed.
+    ///
+    /// **Parameters**
+    ///   * `url` - parameter of type `string` - URL to request
+    ///   * `decoder` - parameter of type `Decoder<'Response>` - Decoder applied to the server response
+    ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
+    ///
+    /// **Output Type**
+    ///   * `JS.Promise<'Response>`
+    ///
+    /// **Exceptions**
+    ///   * `System.Exception` - Contains information explaining why the decoder failed
+    ///
+    static member fetchAs<'Response>
+                                    (url : string,
+                                     decoder : Decode.Decoder<'Response>,
+                                     ?properties : RequestProperties list) =
+        promise {
+            let properties = defaultArg properties []
+            let! response = fetch url properties
+            let! body = response.text()
+            let result = Decode.fromString decoder  body
+                         |> function
+                            | Ok result -> result
+                            | Error msg -> failwith msg
+            return result 
+        }
+         
+    /// **Description**
+    ///
+    /// Retrieves data from the specified resource.
+    ///
+    /// A decoder will be generated or retrieved from the cache for the `'Response` type.
+    ///
+    /// An exception will be thrown if the decoder failed.
+    ///
+    /// **Parameters**
+    ///   * `url` - parameter of type `string` - URL to request
+    ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
+    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
+    ///
+    /// **Output Type**
+    ///   * `JS.Promise<'Response>`
+    ///
+    /// **Exceptions**
+    ///   * `System.Exception` - Contains information explaining why the decoder failed
+    ///
+    static member fetchAs<'Response>(url : string,
+                                     ?properties : RequestProperties list,
+                                     ?isCamelCase : bool,
+                                     [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        let decoder = Decode.Auto.generateDecoder<'Response'>(?isCamelCase=isCamelCase,?resolver= responseResolver)
+        Fetch.fetchAs(url, decoder, ?properties = properties)
+
+
+    static member fetchAs<'Data, 'Response>(url : string,
+                                            data : 'Data,
+                                            httpMethod : HttpMethod,
+                                            ?properties : RequestProperties list,
+                                            ?headers: HttpRequestHeaders list,
+                                            ?isCamelCase : bool,
+                                            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+
+        let responseDecoder = Decode.Auto.generateDecoder<'Response>(?isCamelCase = isCamelCase, ?resolver = responseResolver)
+
+        let body:BodyInit = !^ (Encode.Auto.toString (4, data))
+            
+        let properties =
+            [ RequestProperties.Method httpMethod
+              requestHeaders ( (ContentType "application/json") :: defaultArg headers [] ) 
+              RequestProperties.Body body ]
+            @ defaultArg properties []
+
+        Fetch.fetchAs(url, responseDecoder, properties = properties)
+
+
+    /// **Description**
+    ///
+    /// Retrieves data from the specified resource by applying the provided `decoder`.
+    ///
+    /// If the decoder succeed, we return `Ok 'Response`.
+    ///
+    /// If the decoder failed, we return `Error "explanation..."`
+    ///
+    /// **Parameters**
+    ///   * `url` - parameter of type `string` - URL to request
+    ///   * `decoder` - parameter of type `Decoder<'Response>` - Decoder applied to the server response
+    ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
+    ///
+    /// **Output Type**
+    ///   * `JS.Promise<Result<'Response,string>>`
+    ///
+    /// **Exceptions**
+    ///
+    static member tryFetchAs<'Response>( url : string,
+                                         decoder : Decode.Decoder<'Response>,
+                                         ?properties : RequestProperties list) =
+        promise {
+            let properties = defaultArg properties []
+            let! response = fetch url properties
+            let! body = response.text()
+            return Decode.fromString decoder  body
+        }
+
+    /// **Description**
+    ///
+    /// Retrieves data from the specified resource.
+    ///
+    /// A decoder will be generated or retrieved from the cache for the `'Response` type.
+    ///
+    /// An exception will be thrown if the decoder failed.
+    ///
+    /// **Parameters**
+    ///   * `url` - parameter of type `string` - URL to request
+    ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
+    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
+    ///
+    /// **Output Type**
+    ///   * `JS.Promise<'Response>`
+    ///
+    /// **Exceptions**
+    ///   * `System.Exception` - Contains information explaining why the decoder failed
+    ///
+    static member tryFetchAs<'Response>(url : string,
+                                        ?properties : RequestProperties list,
+                                        ?isCamelCase : bool,
+                                        [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        let decoder = Decode.Auto.generateDecoder<'Response'>(?isCamelCase=isCamelCase, ?resolver= responseResolver)
+        Fetch.tryFetchAs(url, decoder, ?properties = properties)
+
+    static member tryFetchAs<'Data, 'Response>(url : string,
+                                               data : 'Data,
+                                               httpMethod : HttpMethod,
+                                               ?properties : RequestProperties list,
+                                               ?headers: HttpRequestHeaders list,
+                                               ?isCamelCase : bool,
+                                               [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+
+        let responseDecoder = Decode.Auto.generateDecoder<'Response>(?isCamelCase = isCamelCase, ?resolver = responseResolver)
+
+        let body:BodyInit = !^ (Encode.Auto.toString (4, data))
+
+        let properties =
+            [ RequestProperties.Method httpMethod
+              requestHeaders ( (ContentType "application/json") :: defaultArg headers [] ) 
+              RequestProperties.Body body ]
+            @ defaultArg properties []
+
+        Fetch.tryFetchAs(url, responseDecoder, properties = properties)
+
     /// **Description**
     ///
     /// Retrieves data from the specified resource.
@@ -49,7 +200,6 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
     ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
-    ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///
     /// **Output Type**
@@ -64,11 +214,40 @@ type Fetch =
             url : string,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        let sf = ServicesFramework.setup' true moduleId moduleName url properties  
-        Thoth.Fetch.Fetch.fetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver )
+        let sf = ServicesFramework.setup moduleId moduleName url 
+        let props = [ requestHeaders sf.Headers ; Credentials RequestCredentials.Sameorigin]  @ defaultArg properties []
+        Fetch.fetchAs<'Response> (sf.Url, props , ?isCamelCase = isCamelCase, ?responseResolver = responseResolver )
 
+
+    static member fetchAs<'Data, 'Response>
+          ( moduleId : string, 
+            moduleName : string,
+            url: string,
+            data : 'Data,
+            httpMethod : HttpMethod,
+            ?properties : RequestProperties list,
+            ?isCamelCase : bool,
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =  
+        let sf = ServicesFramework.setup moduleId moduleName url
+        let props = (Credentials RequestCredentials.Sameorigin) :: defaultArg properties []
+        let headers = sf.Headers 
+        Fetch.fetchAs<'Data,'Response> (sf.Url, data, httpMethod, ?properties = Some props, ?headers = Some headers, ?isCamelCase= isCamelCase, ?responseResolver= responseResolver) 
+    
+    static member tryFetchAs<'Data, 'Response>
+          ( moduleId : string, 
+            moduleName : string,
+            url: string,
+            data : 'Data,
+            httpMethod : HttpMethod,
+            ?properties : RequestProperties list,
+            ?isCamelCase : bool,
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =  
+        let sf = ServicesFramework.setup moduleId moduleName url
+        let props = (Credentials RequestCredentials.Sameorigin) :: defaultArg properties []
+        let headers = sf.Headers 
+        Fetch.tryFetchAs<'Data,'Response> (sf.Url, data, httpMethod, ?properties = Some props, ?headers = Some headers, ?isCamelCase= isCamelCase, ?responseResolver= responseResolver) 
+    
     /// **Description**
     ///
     /// Retrieves data from the specified resource.
@@ -85,7 +264,6 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
     ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
-    ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///
     /// **Output Type**
@@ -99,10 +277,10 @@ type Fetch =
             url : string,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        let sf = ServicesFramework.setup' true moduleId moduleName url properties 
-        Thoth.Fetch.Fetch.tryFetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra= extra, ?responseResolver= responseResolver)
+        let sf = ServicesFramework.setup moduleId moduleName url 
+        let props = [ requestHeaders sf.Headers ; Credentials RequestCredentials.Sameorigin]  @ defaultArg properties []
+        Fetch.tryFetchAs<'Response> (sf.Url, props, ?isCamelCase = isCamelCase, ?responseResolver= responseResolver)
 
     /// Alias to `Fetch.fetchAs`
     static member get<'Response>
@@ -111,9 +289,8 @@ type Fetch =
             url : string,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        Fetch.fetchAs<'Response>(moduleId, moduleName,url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver)
+        Fetch.fetchAs<'Response>(moduleId, moduleName,url, ?properties = properties, ?isCamelCase = isCamelCase, ?responseResolver = responseResolver)
 
     /// Alias to `Fetch.tryFetchAs`
     static member tryGet<'Response>
@@ -122,9 +299,8 @@ type Fetch =
                url : string,
                ?properties : RequestProperties list,
                ?isCamelCase : bool,
-               ?extra: ExtraCoders,
                [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        Fetch.tryFetchAs<'Response>(moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver)
+        Fetch.tryFetchAs<'Response>(moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?responseResolver = responseResolver)
     
     /// **Description**
     ///
@@ -162,12 +338,8 @@ type Fetch =
             data : 'Data,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
-            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.post<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.fetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.POST, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)
 
     /// **Description**
     ///
@@ -205,12 +377,9 @@ type Fetch =
                                             data : 'Data,
                                             ?properties : RequestProperties list,
                                             ?isCamelCase : bool,
-                                            ?extra: ExtraCoders,
-                                            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-                                            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPost<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
-                                    
+                                            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.tryFetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.POST, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)
+
     /// **Description**
     ///
     /// Send a **PUT** request to the specified resource and apply the provided `decoder` to the response.
@@ -247,12 +416,9 @@ type Fetch =
             data : 'Data,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
-            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
 
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.put<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Fetch.fetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.PUT, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)
 
     /// **Description**
     ///
@@ -285,17 +451,14 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryPut<'Data, 'Response>(moduleId : string,
-                                            moduleName : string, 
-                                            url : string,
-                                            data : 'Data,
-                                            ?properties : RequestProperties list,
-                                            ?isCamelCase : bool,
-                                            ?extra: ExtraCoders,
-                                            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-                                            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPut<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
-                                    
+                                           moduleName : string, 
+                                           url : string,
+                                           data : 'Data,
+                                           ?properties : RequestProperties list,
+                                           ?isCamelCase : bool,
+                                           [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.tryFetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.PUT, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)                                  
+    
     /// **Description**
     ///
     /// Send a **PATCH** request to the specified resource and apply the provided `decoder` to the response.
@@ -332,12 +495,9 @@ type Fetch =
             data : 'Data,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
-            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
 
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.patch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Fetch.fetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.PATCH, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)
 
     /// **Description**
     ///
@@ -375,12 +535,9 @@ type Fetch =
                                              data : 'Data,
                                              ?properties : RequestProperties list,
                                              ?isCamelCase : bool,
-                                             ?extra: ExtraCoders,
-                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-                                             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPatch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
-                                    
+                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.tryFetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.PATCH, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)   
+
     /// **Description**
     ///
     /// Send a **DELETE** request to the specified resource and apply the provided `decoder` to the response.
@@ -417,12 +574,8 @@ type Fetch =
             data : 'Data,
             ?properties : RequestProperties list,
             ?isCamelCase : bool,
-            ?extra: ExtraCoders,
-            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.delete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+            [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.fetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.DELETE, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)
 
     /// **Description**
     ///
@@ -460,9 +613,5 @@ type Fetch =
                                               data : 'Data,
                                               ?properties : RequestProperties list,
                                               ?isCamelCase : bool,
-                                              ?extra: ExtraCoders,
-                                              [<Inject>] ?responseResolver: ITypeResolver<'Response>,
-                                              [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
-        let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryDelete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
-                                    
+                                              [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
+        Fetch.tryFetchAs<'Data, 'Response> (moduleId, moduleName, url,  data, HttpMethod.DELETE, ?properties = properties, ?isCamelCase= isCamelCase, ?responseResolver=responseResolver)                            
