@@ -1,32 +1,25 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>DNN.Fable.Fetch</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-     <Authors>Stefan Cullmann</Authors>
+    <Authors>Stefan Cullmann</Authors>
     <Company>Stefan Cullmann</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SCullman/DNN.Fable.Connector</PackageProjectUrl>
-    <PackageTags>DNN DotNetNuke fsharp json</PackageTags>
+    <PackageTags>DNN;DotNetNuke;fsharp;json</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="Decode.fs" />
-    <Compile Include="Encode.fs" />
     <Compile Include="DNN.Fable.fs" />
   </ItemGroup>
   <!-- Add source files to "fable" folder in Nuget package -->
-<ItemGroup>
+  <ItemGroup>
     <Content Include="*.fsproj; **\*.fs" PackagePath="fable\" />
-</ItemGroup>
-<ItemGroup>
-  <PackageReference Include="Fable.Fetch" Version="2.1.0" />
-</ItemGroup>
-<ItemGroup>
-  <PackageReference Update="FSharp.Core" Version="4.6.2" />
-</ItemGroup>
-
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

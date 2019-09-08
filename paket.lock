@@ -1,0 +1,43 @@
+
+
+GROUP Fable
+STORAGE: NONE
+RESTRICTION: == netstandard2.0
+NUGET
+  remote: https://www.nuget.org/api/v2
+    Fable.Browser.Blob (1.1)
+      Fable.Core (>= 3.0)
+      FSharp.Core (>= 4.6.2)
+    Fable.Core (3.0)
+      FSharp.Core (>= 4.5.2)
+    Fable.Fetch (2.1)
+      Fable.Browser.Blob (>= 1.1)
+      Fable.Core (>= 3.0)
+      Fable.Promise (>= 2.0)
+      FSharp.Core (>= 4.6.2)
+    Fable.Promise (2.0)
+      Fable.Core (>= 3.0)
+      FSharp.Core (>= 4.5.2)
+    FSharp.Core (4.7)
+  remote: ..\..\_nuget_local
+    Fable.WebApi.Fetch (0.1.0)
+      Fable.Fetch (>= 2.1)
+
+GROUP Framework
+STORAGE: NONE
+RESTRICTION: == net461
+NUGET
+  remote: https://www.nuget.org/api/v2
+    DotNetNuke.Core (8.0.4.226)
+    DotNetNuke.WebApi (8.0.4.226)
+      Microsoft.AspNet.WebApi.Client (>= 4.0.20710)
+    FSharp.Core (4.7)
+    Microsoft.AspNet.WebApi.Client (5.2.7)
+      Newtonsoft.Json (>= 6.0.4)
+    Microsoft.AspNet.WebApi.Core (5.2.7)
+      Microsoft.AspNet.WebApi.Client (>= 5.2.7)
+    Newtonsoft.Json (11.0.2)
+  remote: ..\..\_nuget_local
+    Fable.WebApi (0.1.0)
+      Microsoft.AspNet.WebApi.Core (>= 5.2.3)
+      Newtonsoft.Json (>= 11.0.2)

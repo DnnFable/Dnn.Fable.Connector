@@ -1,0 +1,3 @@
+group Fable
+Fable.WebApi.Fetch
+FSharp.Core
