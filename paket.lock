@@ -20,7 +20,7 @@ NUGET
       FSharp.Core (>= 4.5.2)
     FSharp.Core (4.7)
   remote: ..\..\_nuget_local
-    Fable.WebApi.Fetch (0.1.0)
+    Fable.WebApi.Fetch (0.2.0)
       Fable.Fetch (>= 2.1)
 
 GROUP Framework
@@ -38,6 +38,7 @@ NUGET
       Microsoft.AspNet.WebApi.Client (>= 5.2.7)
     Newtonsoft.Json (11.0.2)
   remote: ..\..\_nuget_local
-    Fable.WebApi (0.1.0)
+    Fable.WebApi (0.2.0)
+      FSharp.Core (>= 4.7)
       Microsoft.AspNet.WebApi.Core (>= 5.2.3)
       Newtonsoft.Json (>= 11.0.2)

@@ -9,7 +9,7 @@ group Framework
     nuget Newtonsoft.Json ~> 11.0
 
     source ..\..\_nuget_local
-    nuget Fable.WebApi ~> 0.1
+    nuget Fable.WebApi ~> 0.2
 
 group Fable
     framework: netstandard2.0
@@ -18,4 +18,4 @@ group Fable
     nuget FSharp.Core
 
     source ..\..\_nuget_local
-    nuget Fable.WebApi.Fetch ~> 0.1
+    nuget Fable.WebApi.Fetch ~> 0.2
