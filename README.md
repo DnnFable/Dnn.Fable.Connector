@@ -12,7 +12,7 @@ And all plays well with DNN, and developers can benefit from the proven security
 
 `Dnn.Fable.Fetch` and `Dnn.Fable.ApiController` simplify the communication between Web Api and the SPA module.
 
-## Dnn.Fable.ApiController ![Nuget](https://img.shields.io/nuget/v/Dnn.Fable.ApiController?style=flat-square)
+## Dnn.Fable.ApiController [![Nuget](https://img.shields.io/nuget/v/Dnn.Fable.ApiController?style=flat-square)](https://www.nuget.org/packages/Dnn.Fable.ApiController/)
 
 Usually DNN Web Services inherit from `DotNetNuke.Web.Api.DnnApiController`, which is again based on Web Api. It is a perfect match, it is only that it uses `Newtonsoft.Json` for encoding and decoding data for requests and responses.
 
@@ -69,7 +69,7 @@ type MyServiceController() =
 ```
 
 
-## Dnn.Fable.Fetch ![Nuget](https://img.shields.io/nuget/v/Dnn.Fable.Fetch?style=flat-square)
+## Dnn.Fable.Fetch [![Nuget](https://img.shields.io/nuget/v/Dnn.Fable.Fetch?style=flat-square)](https://www.nuget.org/packages/Dnn.Fable.Fetch)
 
 DNN provides a `ServicesFramework` as `JQuery` extension which is using AJAX calls to talk to the service. A more modern approach would be based on fetch.
 However, each call needs the correct ModuleHeaders with `moduleId`, `tabId`, `antiForgeryToken` and maybe also requestCredentials.
