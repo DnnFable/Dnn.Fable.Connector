@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <PackageId>Dnn.Fable.AoiController</PackageId>
+    <PackageId>Dnn.Fable.ApiController</PackageId>
     <Version>1.1.0</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <Authors>Stefan Cullmann</Authors>
