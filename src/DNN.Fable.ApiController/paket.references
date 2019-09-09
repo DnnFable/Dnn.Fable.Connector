@@ -1,0 +1,7 @@
+group Framework
+    Thoth.Json.Net.Formatter
+    DotNetNuke.Core  copy_local: false  
+    DotNetNuke.WebApi  copy_local: false
+    Microsoft.AspNet.WebApi  copy_local: false
+    Microsoft.AspNet.WebApi.Core  copy_local: false
+    Microsoft.AspNet.WebApi.Client   copy_local: false
