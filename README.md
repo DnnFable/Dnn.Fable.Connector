@@ -1,8 +1,8 @@
-# DNN.Fable.Connector
+# Dnn.Fable.Connector
 
 ## Introduction
 
-[DNN](https://dnndocs.com) as Web Application Framework offers multiple ways of writing extensions. Modules can be written as WebForms, MVC or simple [SPA modules](https://dnndocs.com/content/guides/tutorials/modules/about-modules/spa-module-development/index.html#spa-module-development).
+[DNN](https://Dnndocs.com) as Web Application Framework offers multiple ways of writing extensions. Modules can be written as WebForms, MVC or simple [SPA modules](https://Dnndocs.com/content/guides/tutorials/modules/about-modules/spa-module-development/index.html#spa-module-development).
 
 SPA modules are typically build with HTML 5, CSS and JS-Frameworks like React, Angular or Vue.js. These frameworks talk to Web API based services for querying data or executing scripts.
 
@@ -10,9 +10,9 @@ Functional Programming is growing popularity and tools like [Elm lang](https://e
 
 And all plays well with DNN, and developers can benefit from the proven security and extensibility.
 
-`DNN.Fable.Fetch` and `DNN.Fable.ApiController` simplify the communication between Web Api and the SPA module.
+`Dnn.Fable.Fetch` and `Dnn.Fable.ApiController` simplify the communication between Web Api and the SPA module.
 
-## DNN.Fable.ApiController
+## Dnn.Fable.ApiController
 
 Usually DNN Web Services inherit from `DotNetNuke.Web.Api.DnnApiController`, which is again based on Web Api. It is a perfect match, it is only that it uses `Newtonsoft.Json` for encoding and decoding data for requests and responses.
 
@@ -32,7 +32,7 @@ type User =
            UserId: int |}
 ```
 
-The web service in F# is quite familiar beside from the syntax, the only difference is that it inherits now from [DNN.Fable.ApiController](https://www.nuget.org/packages/DNN.Fable.ApiController/)
+The web service in F# is quite familiar beside from the syntax, the only difference is that it inherits now from [Dnn.Fable.ApiController](https://www.nuget.org/packages/Dnn.Fable.ApiController/)
 
 ```fsharp
 namespace MyCompany.MyModule
@@ -44,6 +44,7 @@ open System.Net.Http
 open DotNetNuke.Web.Api
 open DotNetNuke.Security
 
+
 type RouteMapper ()=
     interface IServiceRouteMapper with
       member __.RegisterRoutes (rtm:IMapRoute) = 
@@ -52,7 +53,7 @@ type RouteMapper ()=
         rtm.MapHttpRoute  (moduleApiName, "default", "{controller}/{action}", namespaces) |> ignore                                
 
 type MyServiceController() = 
-    inherit DNN.Fable.ApiController() // instead of DnnApiController
+    inherit Dnn.Fable.ApiController() // instead of DnnApiController
 
     [<HttpGet>]
     [<ValidateAntiForgeryToken>] 
@@ -69,7 +70,7 @@ type MyServiceController() =
 ```
 
 
-## DNN.Fable.Fetch
+## Dnn.Fable.Fetch
 
 DNN provides a `ServicesFramework` as `JQuery` extension which is using AJAX calls to talk to the service. A more modern approach would be based on fetch.
 However, each call needs the correct ModuleHeaders with `moduleId`, `tabId`, `antiForgeryToken` and maybe also requestCredentials.
@@ -97,7 +98,7 @@ let url = "myservice/currentuser" // MyServiceController.CurrentUser()
 let container = document.getElementById "myModule-container"
 let moduleId = container.dataset.["moduleId"]
 
-DNN.Fable.Fetch.get(moduleId, moduleName, url) // returns a Promise<User>
+Dnn.Fable.Fetch.get(moduleId, moduleName, url) // returns a Promise<User>
 |> Promise.iter ( fun user -> 
     let text =
         match user with
@@ -106,7 +107,7 @@ DNN.Fable.Fetch.get(moduleId, moduleName, url) // returns a Promise<User>
     container.innerText <- text ) 
 ```
 
-[DNN.Fable.Fetch](https://www.nuget.org/packages/DNN.Fable.Fetch/) offers methods to handle GET, POST, PUT, DELETE, PATCH requests.
+[Dnn.Fable.Fetch](https://www.nuget.org/packages/Dnn.Fable.Fetch/) offers methods to handle GET, POST, PUT, DELETE, PATCH requests.
 
 ### Credits
-DNN.Fable Fetch and ApiController are build on top of [Thoth.Json.Net](https://github.com/thoth-org/Thoth.Json.Net) and [Thoth.Fetch](https://github.com/thoth-org/Thoth.Fetch)
+Dnn.Fable Fetch and ApiController are build on top of [Thoth.Json.Net](https://github.com/thoth-org/Thoth.Json.Net) and [Thoth.Fetch](https://github.com/thoth-org/Thoth.Fetch)

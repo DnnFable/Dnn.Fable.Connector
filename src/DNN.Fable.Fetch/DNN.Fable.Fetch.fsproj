@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>DNN.Fable.Fetch</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <Authors>Stefan Cullmann</Authors>
     <Company>Stefan Cullmann</Company>
@@ -13,7 +13,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DNN.Fable.fs" />
+    <Compile Include="ServicesFramework.fs" />
+    <Compile Include="Fetch.fs" />
   </ItemGroup>
   <!-- Add source files to "fable" folder in Nuget package -->
   <ItemGroup>

@@ -4,17 +4,17 @@
     <Description>JSON Serisalisation for using Fable with WebApi</Description>
     <PackageTags>DNN;DotNetNuke;fsharp;json</PackageTags>
     <Authors>Stefan Cullmann</Authors>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/SCullman/DNN.Fable.Connector</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/SCullman/Dnn.Fable.Connector</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DNN.Fable.fs" />
+    <Compile Include="ApiController.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

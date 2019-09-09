@@ -1,33 +1,8 @@
-﻿module DNN.Fable
+﻿namespace Dnn.Fable
 
 open Fable.Core
-open Fable.Core.JsInterop
 open Fetch
 
-
-[<RequireQualifiedAccess>]
-module ServicesFramework =
-    type IServicesFramework = 
-        abstract getServiceRoot: string -> string 
-        abstract setModuleHeaders: obj -> unit
-        abstract getTabId : unit -> int option
-        abstract getModuleId : unit -> int option 
-        abstract getAntiForgeryValue : unit -> string option
-
-    [<Emit("window['$'].ServicesFramework($0)")>]
-    let init moduleid :IServicesFramework  = jsNative 
-
-    let moduleHeaders (sf:IServicesFramework) = [    
-        Custom ("ModuleId", sf.getModuleId())
-        Custom ("TabId", sf.getTabId())
-        Custom ("RequestVerificationToken", sf.getAntiForgeryValue())]
-
-    let setup moduleId moduleName url =
-        let sf = init moduleId    
-        let serviceroot = sf.getServiceRoot(moduleName)
-        {| Url = serviceroot + url ; Headers = moduleHeaders sf  |}
-
-type RequestProperties = Fetch.Types.RequestProperties
 type Fetch =
     inherit Fable.WebApi.Fetch
      
@@ -44,7 +19,6 @@ type Fetch =
     ///   * `moduleName` - parameter of type `string` - Name of DNN Module
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///
     /// **Output Type**
@@ -62,7 +36,7 @@ type Fetch =
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         let sf = ServicesFramework.setup moduleId moduleName url 
         let props = [Credentials RequestCredentials.Sameorigin]
-        Fetch.fetchAs<'Data,'Response> (sf.Url, ?properties = Some props ,?httpMethod = httpMethod, ?data = data, ?headers = Some sf.Headers, ?isCamelCase = Some false, ?responseResolver = responseResolver )
+        Fetch.fetchAs<'Data,'Response> (sf.Url, ?properties = Some props ,?httpMethod = httpMethod, ?data = data, ?headers = Some sf.Headers, ?responseResolver = responseResolver )
 
     static member tryFetchAs<'Data,'Response>
           ( moduleId : string, 
@@ -73,7 +47,7 @@ type Fetch =
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =  
         let sf = ServicesFramework.setup moduleId moduleName url
         let props = [Credentials RequestCredentials.Sameorigin]
-        Fetch.tryFetchAs<'Data,'Response> (sf.Url, ?properties = Some props ,?httpMethod = httpMethod, ?data = data, ?headers = Some sf.Headers, ?isCamelCase = Some false, ?responseResolver = responseResolver )
+        Fetch.tryFetchAs<'Data,'Response> (sf.Url, ?properties = Some props ,?httpMethod = httpMethod, ?data = data, ?headers = Some sf.Headers, ?responseResolver = responseResolver )
         
     static member get<'Response>
            (moduleId : string, 
