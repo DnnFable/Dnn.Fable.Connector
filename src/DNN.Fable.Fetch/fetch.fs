@@ -34,7 +34,13 @@ module ServicesFramework =
 
     let setup = setup' false
 
+module ExtraCoder =
+    let unitDecoder : Decoder<unit> = fun _ _ -> () |> Ok
+    let unitEncoder () : JsonValue = failwith "Cannot encode unit"
+    let unit extra = Extra.withCustom unitEncoder unitDecoder  (defaultArg extra Extra.empty) |> Some
+        
 type Fetch =
+
     /// **Description**
     ///
     /// Retrieves data from the specified resource.
@@ -67,7 +73,7 @@ type Fetch =
             ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         let sf = ServicesFramework.setup' true moduleId moduleName url properties  
-        Thoth.Fetch.Fetch.fetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver )
+        Thoth.Fetch.Fetch.fetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver = responseResolver )
 
     /// **Description**
     ///
@@ -102,7 +108,7 @@ type Fetch =
             ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         let sf = ServicesFramework.setup' true moduleId moduleName url properties 
-        Thoth.Fetch.Fetch.tryFetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra= extra, ?responseResolver= responseResolver)
+        Thoth.Fetch.Fetch.tryFetchAs<'Response> (sf.Url, sf.Props, ?isCamelCase = isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver= responseResolver)
 
     /// Alias to `Fetch.fetchAs`
     static member get<'Response>
@@ -113,7 +119,7 @@ type Fetch =
             ?isCamelCase : bool,
             ?extra: ExtraCoders,
             [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        Fetch.fetchAs<'Response>(moduleId, moduleName,url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver)
+        Fetch.fetchAs<'Response>(moduleId, moduleName,url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver = responseResolver)
 
     /// Alias to `Fetch.tryFetchAs`
     static member tryGet<'Response>
@@ -124,7 +130,7 @@ type Fetch =
                ?isCamelCase : bool,
                ?extra: ExtraCoders,
                [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
-        Fetch.tryFetchAs<'Response>(moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra, ?responseResolver = responseResolver)
+        Fetch.tryFetchAs<'Response>(moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver = responseResolver)
     
     /// **Description**
     ///
@@ -167,7 +173,7 @@ type Fetch =
             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.post<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.post<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
 
     /// **Description**
     ///
@@ -209,7 +215,7 @@ type Fetch =
                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPost<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.tryPost<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
                                     
     /// **Description**
     ///
@@ -252,7 +258,7 @@ type Fetch =
             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.put<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.put<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
 
     /// **Description**
     ///
@@ -294,7 +300,7 @@ type Fetch =
                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPut<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.tryPut<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
                                     
     /// **Description**
     ///
@@ -337,7 +343,7 @@ type Fetch =
             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.patch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.patch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
 
     /// **Description**
     ///
@@ -379,7 +385,7 @@ type Fetch =
                                              [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                              [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryPatch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.tryPatch<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
                                     
     /// **Description**
     ///
@@ -422,7 +428,7 @@ type Fetch =
             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.delete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.delete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
 
     /// **Description**
     ///
@@ -464,5 +470,5 @@ type Fetch =
                                               [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                               [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
-        Thoth.Fetch.Fetch.tryDelete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra=extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
+        Thoth.Fetch.Fetch.tryDelete<'Data, 'Response> (sf.Url, data, sf.Props, ?isCamelCase= isCamelCase, ?extra = ExtraCoder.unit extra, ?responseResolver=responseResolver, ?dataResolver=dataResolver)
                                     
