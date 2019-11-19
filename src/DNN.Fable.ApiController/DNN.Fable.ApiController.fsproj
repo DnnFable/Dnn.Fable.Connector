@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <PackageId>Dnn.Fable.ApiController</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <Authors>Stefan Cullmann</Authors>
     <Company>Stefan Cullmann</Company>

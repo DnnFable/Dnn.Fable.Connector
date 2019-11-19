@@ -2,19 +2,19 @@ group Fable
     source https://www.nuget.org/api/v2
     storage: none
     framework: netstandard2.0
-    nuget Thoth.Fetch
-    nuget Fsharp.Core ~> 4.6
+    nuget Thoth.Fetch prerelease
+    nuget Fsharp.Core 
 
 group Framework
     source https://www.nuget.org/api/v2
     storage: none
     framework: net461
     nuget Thoth.Json.Net.Formatter
-    nuget DotNetNuke.Core 8.0.4.226   
+    nuget DotNetNuke.Core 8.0.4.226  
     nuget DotNetNuke.Web 8.0.4.226 
     nuget DotNetNuke.WebApi 8.0.4.226 
     nuget Microsoft.AspNet.WebApi 5.2.3.0  
     nuget Microsoft.AspNet.WebApi.Core 5.2.3.0  
     nuget Microsoft.AspNet.WebApi.Client 5.2.3.0
     nuget NewtonSoft.Json ~> 11.0
-    nuget Fsharp.Core ~> 4.6
+    nuget Fsharp.Core 
