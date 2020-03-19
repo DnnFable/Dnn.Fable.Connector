@@ -46,7 +46,7 @@ type Fetch =
     ///   * `moduleName` - parameter of type `string` - Name of DNN Module
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///
@@ -57,11 +57,11 @@ type Fetch =
     ///   * `System.Exception` - Contains information explaining why the decoder failed
     ///
     static member fetchAs<'Response> (moduleId: string, moduleName: string, url: string,
-                                      ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                      ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                       [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         let sf = ServicesFramework.setup' true moduleId moduleName url properties
         Thoth.Fetch.Fetch.fetchAs
-            (sf.Url, properties = sf.Props, headers = sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, properties = sf.Props, headers = sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver)
 
     /// **Description**
@@ -79,7 +79,7 @@ type Fetch =
     ///   * `moduleName` - parameter of type `string` - Name of DNN Module
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///
@@ -89,27 +89,27 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryFetchAs<'Response> (moduleId: string, moduleName: string, url: string,
-                                         ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                         ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                          [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         let sf = ServicesFramework.setup' true moduleId moduleName url properties
         Thoth.Fetch.Fetch.tryFetchAs
-            (sf.Url, properties = sf.Props, headers = sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, properties = sf.Props, headers = sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver)
 
     /// Alias to `Fetch.fetchAs`
     static member get<'Response> (moduleId: string, moduleName: string, url: string, ?properties: RequestProperties list,
-                                  ?isCamelCase: bool, ?extra: ExtraCoders,
+                                  ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                   [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         Fetch.fetchAs<'Response>
-            (moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra,
+            (moduleId, moduleName, url, ?properties = properties, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver)
 
     /// Alias to `Fetch.tryFetchAs`
     static member tryGet<'Response> (moduleId: string, moduleName: string, url: string,
-                                     ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                     ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                      [<Inject>] ?responseResolver: ITypeResolver<'Response>) =
         Fetch.tryFetchAs<'Response>
-            (moduleId, moduleName, url, ?properties = properties, ?isCamelCase = isCamelCase, ?extra = extra,
+            (moduleId, moduleName, url, ?properties = properties, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver)
 
     /// **Description**
@@ -130,7 +130,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -142,13 +142,13 @@ type Fetch =
     ///   * `System.Exception` - Contains information explaining why the decoder failed
     ///
     static member post<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                          ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                          ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                           [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                           [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.post<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -171,7 +171,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -182,12 +182,12 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryPost<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                             ?properties: RequestProperties list, ?isCamelCase: bool,
+                                             ?properties: RequestProperties list, ?caseStrategy: CaseStrategy,
                                              ?extra: ExtraCoders, [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                              [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.tryPost<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -208,7 +208,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -220,13 +220,13 @@ type Fetch =
     ///   * `System.Exception` - Contains information explaining why the decoder failed
     ///
     static member put<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                         ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                         ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                          [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                          [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.put<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -249,7 +249,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -260,12 +260,12 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryPut<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                            ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                            ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.tryPut<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -286,7 +286,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -298,13 +298,13 @@ type Fetch =
     ///   * `System.Exception` - Contains information explaining why the decoder failed
     ///
     static member patch<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                           ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                           ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                            [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                            [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.patch<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -327,7 +327,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -338,13 +338,13 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryPatch<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                              ?properties: RequestProperties list, ?isCamelCase: bool,
+                                              ?properties: RequestProperties list, ?caseStrategy: CaseStrategy,
                                               ?extra: ExtraCoders,
                                               [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                               [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.tryPatch<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -365,7 +365,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -377,13 +377,13 @@ type Fetch =
     ///   * `System.Exception` - Contains information explaining why the decoder failed
     ///
     static member delete<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                            ?properties: RequestProperties list, ?isCamelCase: bool, ?extra: ExtraCoders,
+                                            ?properties: RequestProperties list, ?caseStrategy: CaseStrategy, ?extra: ExtraCoders,
                                             [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                             [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
 
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.delete<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
 
     /// **Description**
@@ -406,7 +406,7 @@ type Fetch =
     ///   * `url` - parameter of type `string` - URL to request
     ///   * `data` - parameter of type `'Data` - Data sent via the body, it will be converted to JSON before
     ///   * `properties` - parameter of type `RequestProperties list option` - Parameters passed to fetch
-    ///   * `isCamelCase` - parameter of type `bool option` - Options passed to Thoth.Json to control JSON keys representation
+    ///   * `caseStrategy` - optional parameter of type `CaseStrategy` - Options passed to Thoth.Json to control JSON keys representation
     ///   * `extra` - parameter of type `ExtraCoders option` - Options passed to Thoth.Json to extends the known coders
     ///   * `responseResolver` - parameter of type `ITypeResolver<'Response> option` - Used by Fable to provide generic type info
     ///   * `dataResolver` - parameter of type `ITypeResolver<'Data> option` - Used by Fable to provide generic type info
@@ -417,11 +417,11 @@ type Fetch =
     /// **Exceptions**
     ///
     static member tryDelete<'Data, 'Response> (moduleId: string, moduleName: string, url: string, data: 'Data,
-                                               ?properties: RequestProperties list, ?isCamelCase: bool,
+                                               ?properties: RequestProperties list, ?caseStrategy: CaseStrategy,
                                                ?extra: ExtraCoders,
                                                [<Inject>] ?responseResolver: ITypeResolver<'Response>,
                                                [<Inject>] ?dataResolver: ITypeResolver<'Data>) =
         let sf = ServicesFramework.setup moduleId moduleName url properties
         Thoth.Fetch.Fetch.tryDelete<'Data, 'Response>
-            (sf.Url, data, sf.Props, sf.Headers, ?isCamelCase = isCamelCase, ?extra = extra,
+            (sf.Url, data, sf.Props, sf.Headers, ?caseStrategy  = caseStrategy, ?extra = extra,
              ?responseResolver = responseResolver, ?dataResolver = dataResolver)
